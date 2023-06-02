@@ -4,6 +4,8 @@ import { Grid, makeStyles } from "@material-ui/core"
 
 import Welcome, { ErrorPage } from './component/Welcome';
 import Navbar from './component/Navbar';
+import Login from './component/Login';
+import Signup from './component/Signup';
 import MessagePopup from './lib/MessagePopup'
 import isAuth, { userType } from './lib/isAuth';
 
@@ -40,6 +42,12 @@ function App() {
             <Switch>
               <Route exact path="/">
                 <Welcome />
+              </Route>
+              <Route exact path="/Signup">
+                <Signup />
+              </Route>
+              <Route exact path="/login">
+                <Login />
               </Route>
               <Route>
                 <ErrorPage />
