@@ -1,8 +1,9 @@
-const express = require('express');
-const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
-const cors=require('cors')
-const dotenv=require('dotenv')
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const passportConfig = require("./lib/passportConfig");
+const cors = require("cors");
+const dotenv = require("dotenv")
 
 // MongoDB
 mongoose.set('strictQuery', true);
@@ -23,7 +24,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 // Setting up middlewares
 app.use(cors());
 app.use(express.json());
+app.use(passportConfig.initialize());
 
-app.listen(4000, () => {
-    console.log('Server is running on port 4000');
+// Routing
+app.use("/auth", require("./routes/authRoutes"));
+
+app.listen(4444, () => {
+  console.log('Server is running on port 4444');
 })

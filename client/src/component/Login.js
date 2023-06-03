@@ -7,6 +7,7 @@ import {
     makeStyles,
     Paper,
 } from "@material-ui/core";
+import axios from "axios";
 import { Redirect } from "react-router-dom";
 
 import PasswordInput from "../lib/PasswordInput";
@@ -67,7 +68,39 @@ const Login = (props) => {
         });
     };
 
-    const handleLogin = () => { };
+    const handleLogin = () => {
+        const verified = !Object.keys(inputErrorHandler).some((obj) => {
+            return inputErrorHandler[obj].error;
+        });
+        if (verified) {
+            axios.post(apiList.login, loginDetails)
+                .then((response) => {
+                    localStorage.setItem("token", response.data.token);
+                    localStorage.setItem("type", response.data.type);
+                    setLoggedin(isAuth());
+                    setPopup({
+                        open: true,
+                        severity: "success",
+                        message: "Logged in successfully",
+                    });
+                    console.log(response);
+                })
+                .catch((err) => {
+                    setPopup({
+                        open: true,
+                        severity: "error",
+                        message: err.response.data.message,
+                    });
+                    console.log(err.response);
+                });
+        } else {
+            setPopup({
+                open: true,
+                severity: "error",
+                message: "Incorrect Input",
+            });
+        }
+    };
 
     return loggedin ? (
         <Redirect to="/" />
