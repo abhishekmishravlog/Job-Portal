@@ -3,7 +3,7 @@ const isAuth = () => {
 };
 
 export const userType = () => {
-    return localStorage.getItem("Type");
+    return localStorage.getItem("type");
 };
 
 export default isAuth;
