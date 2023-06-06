@@ -52,7 +52,8 @@ const CreateJobs = (props) => {
         });
     };
 
-    const handleUpdate = () => { };
+    const handleUpdate = () => {
+    };
 
     return (
         <>
