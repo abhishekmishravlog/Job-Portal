@@ -6,8 +6,6 @@ const User = require("../db/User");
 const JobApplicant = require("../db/JobApplicant");
 const Recruiter = require("../db/Recruiter");
 const Job = require("../db/Job");
-const Application = require("../db/Application");
-const Rating = require("../db/Rating");
 
 const router = express.Router();
 
@@ -41,10 +39,12 @@ router.post("/jobs", jwtAuth, (req, res) => {
   job
     .save()
     .then(() => {
-      res.json({ message: "Job added successfully to the database" });
+      res.json({ message: "Job added successfully" });
     })
     .catch((err) => {
       res.status(400).json(err);
     });
 });
+
+module.exports = router;
 
