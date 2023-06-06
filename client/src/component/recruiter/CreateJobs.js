@@ -9,6 +9,7 @@ import {
     TextField,
     MenuItem,
 } from "@material-ui/core";
+import axios from "axios";
 import ChipInput from "material-ui-chip-input";
 
 import { SetPopupContext } from "../../App";
@@ -52,7 +53,42 @@ const CreateJobs = (props) => {
         });
     };
 
-    const handleUpdate = () => { };
+    const handleUpdate = () => {
+        console.log(jobDetails);
+        axios
+            .post(apiList.jobs, jobDetails, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+            .then((response) => {
+                setPopup({
+                    open: true,
+                    severity: "success",
+                    message: response.data.message,
+                });
+                setJobDetails({
+                    title: "",
+                    maxApplicants: 100,
+                    maxPositions: 30,
+                    deadline: new Date(new Date().getTime() + 10 * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .substr(0, 16),
+                    skillsets: [],
+                    jobType: "Full Time",
+                    duration: 0,
+                    salary: 0,
+                });
+            })
+            .catch((err) => {
+                setPopup({
+                    open: true,
+                    severity: "error",
+                    message: err.response.data.message,
+                });
+                console.log(err.response);
+            });
+    };
 
     return (
         <>
