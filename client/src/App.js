@@ -7,7 +7,8 @@ import Navbar from './component/Navbar';
 import Login from './component/Login';
 import Logout from './component/Logout'
 import Signup from './component/Signup';
-import CreateJobs from './component/recruiter/CreateJobs'
+import CreateJobs from './component/recruiter/CreateJobs';
+import MyJobs from './component/recruiter/MyJobs'
 import MessagePopup from './lib/MessagePopup'
 import isAuth, { userType } from './lib/isAuth';
 
@@ -56,6 +57,9 @@ function App() {
               </Route>
               <Route exact path="/addjob">
                 <CreateJobs />
+              </Route>
+              <Route exact path="/myjobs">
+                <MyJobs />
               </Route>
               <Route>
                 <ErrorPage />
