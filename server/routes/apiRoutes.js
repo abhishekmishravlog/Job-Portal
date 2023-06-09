@@ -46,5 +46,51 @@ router.post("/jobs", jwtAuth, (req, res) => {
     });
 });
 
+// to get all the jobs [pagination] [for recruiter personal and for everyone]
+router.get("/jobs", jwtAuth, (req, res) => {
+  let user = req.user;
+
+  let findParams = {};
+
+  // to list down jobs posted by a particular recruiter
+  if (user.type === "recruiter" && req.query.myjobs) {
+    findParams = {
+      ...findParams,
+      userId: user._id,
+    };
+  }
+
+  console.log(findParams);
+
+  let arr = [
+    {
+      $lookup: {
+        from: "recruiterinfos",
+        localField: "userId",
+        foreignField: "userId",
+        as: "recruiter",
+      },
+    },
+    { $unwind: "$recruiter" },
+    { $match: findParams },
+  ];
+
+  console.log(arr);
+
+  Job.aggregate(arr)
+    .then((posts) => {
+      if (posts == null) {
+        res.status(404).json({
+          message: "No job found",
+        });
+        return;
+      }
+      res.json(posts);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
 module.exports = router;
 
