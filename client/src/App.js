@@ -9,6 +9,7 @@ import Logout from './component/Logout'
 import Signup from './component/Signup';
 import CreateJobs from './component/recruiter/CreateJobs';
 import MyJobs from './component/recruiter/MyJobs'
+import Home from './component/Home'
 import MessagePopup from './lib/MessagePopup'
 import isAuth, { userType } from './lib/isAuth';
 
@@ -54,6 +55,9 @@ function App() {
               </Route>
               <Route exact path="/logout">
                 <Logout />
+              </Route>
+              <Route exact path="/home">
+                <Home />
               </Route>
               <Route exact path="/addjob">
                 <CreateJobs />
