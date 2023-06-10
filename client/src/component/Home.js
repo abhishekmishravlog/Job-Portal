@@ -3,9 +3,13 @@ import {
     Button,
     Chip,
     Grid,
+    IconButton,
+    InputAdornment,
     makeStyles,
     Paper,
+    TextField,
     Typography,
+    Modal,
 } from "@material-ui/core";
 import axios from "axios";
 
@@ -41,6 +45,45 @@ const JobTile = (props) => {
     const { job } = props;
     const setPopup = useContext(SetPopupContext);
 
+    const [open, setOpen] = useState(false);
+    const [sop, setSop] = useState("");
+
+    const handleClose = () => {
+        setOpen(false);
+        setSop("");
+    };
+
+    const handleApply = () => {
+        console.log(job._id);
+        console.log(sop);
+        axios.post(
+            `${apiList.jobs}/${job._id}/applications`,
+            {
+                sop: sop,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        ).then((response) => {
+            setPopup({
+                open: true,
+                severity: "success",
+                message: response.data.message,
+            });
+            handleClose();
+        }).catch((err) => {
+            console.log(err.response);
+            setPopup({
+                open: true,
+                severity: "error",
+                message: err.response.data.message,
+            });
+            handleClose();
+        });
+    };
+
     const deadline = new Date(job.deadline).toLocaleDateString();
 
     return (
@@ -70,12 +113,54 @@ const JobTile = (props) => {
                         variant="contained"
                         color="primary"
                         className={classes.button}
+                        onClick={() => {
+                            setOpen(true);
+                        }}
                         disabled={userType() === "recruiter"}
                     >
                         Apply
                     </Button>
                 </Grid>
             </Grid>
+            <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
+                <Paper
+                    style={{
+                        padding: "20px",
+                        outline: "none",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        minWidth: "50%",
+                        alignItems: "center",
+                    }}
+                >
+                    <TextField
+                        label="Write SOP (upto 250 words)"
+                        multiline
+                        rows={8}
+                        style={{ width: "100%", marginBottom: "30px" }}
+                        variant="outlined"
+                        value={sop}
+                        onChange={(event) => {
+                            if (
+                                event.target.value.split(" ").filter(function (n) {
+                                    return n != "";
+                                }).length <= 250
+                            ) {
+                                setSop(event.target.value);
+                            }
+                        }}
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        style={{ padding: "10px 50px" }}
+                        onClick={() => handleApply()}
+                    >
+                        Submit
+                    </Button>
+                </Paper>
+            </Modal>
         </Paper>
     );
 };
