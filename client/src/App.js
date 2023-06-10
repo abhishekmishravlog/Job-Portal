@@ -12,6 +12,8 @@ import MyJobs from './component/recruiter/MyJobs'
 import Home from './component/Home'
 import Applications from './component/Applications';
 import MessagePopup from './lib/MessagePopup'
+import Profile from './component/Profile';
+import RecruiterProfile from './component/recruiter/Profile'
 import isAuth, { userType } from './lib/isAuth';
 
 const useStyles = makeStyles((theme) => ({
@@ -59,6 +61,13 @@ function App() {
               </Route>
               <Route exact path="/home">
                 <Home />
+              </Route>
+              <Route exact path="/profile">
+                {userType() === "recruiter" ? (
+                  <RecruiterProfile />
+                ) : (
+                  <Profile />
+                )}
               </Route>
               <Route exact path="/applications">
                 <Applications />
