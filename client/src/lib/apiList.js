@@ -6,6 +6,9 @@ const apiList = {
   uploadResume: `${server}/upload/resume`,
   uploadProfileImage: `${server}/upload/profile`,
   jobs: `${server}/api/jobs`,
+  applications: `${server}/api/applications`,
+  user: `${server}/api/user`,
+  applicants: `${server}/api/applicants`,
 };
 
 export default apiList;
