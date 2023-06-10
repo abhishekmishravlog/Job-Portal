@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        // padding: "30px",
     },
 }));
 
@@ -51,11 +52,12 @@ const Profile = (props) => {
     }, []);
 
     const getData = () => {
-        axios.get(apiList.user, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        })
+        axios
+            .get(apiList.user, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
             .then((response) => {
                 console.log(response.data);
                 setProfileDetails(response.data);
@@ -68,6 +70,46 @@ const Profile = (props) => {
                     severity: "error",
                     message: "Error",
                 });
+            });
+    };
+
+    const handleUpdate = () => {
+        let updatedDetails = {
+            ...profileDetails,
+        };
+        if (phone !== "") {
+            updatedDetails = {
+                ...profileDetails,
+                contactNumber: `+${phone}`,
+            };
+        } else {
+            updatedDetails = {
+                ...profileDetails,
+                contactNumber: "",
+            };
+        }
+
+        axios
+            .put(apiList.user, updatedDetails, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+            .then((response) => {
+                setPopup({
+                    open: true,
+                    severity: "success",
+                    message: response.data.message,
+                });
+                getData();
+            })
+            .catch((err) => {
+                setPopup({
+                    open: true,
+                    severity: "error",
+                    message: err.response.data.message,
+                });
+                console.log(err.response);
             });
     };
 
@@ -145,6 +187,7 @@ const Profile = (props) => {
                             variant="contained"
                             color="primary"
                             style={{ padding: "10px 50px", marginTop: "30px" }}
+                            onClick={() => handleUpdate()}
                         >
                             Update Details
                         </Button>

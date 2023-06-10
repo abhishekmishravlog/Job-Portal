@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        // padding: "30px",
     },
 }));
 
@@ -104,6 +105,8 @@ const MultifieldInput = (props) => {
 const Profile = (props) => {
     const classes = useStyles();
     const setPopup = useContext(SetPopupContext);
+    const [userData, setUserData] = useState();
+    const [open, setOpen] = useState(false);
 
     const [profileDetails, setProfileDetails] = useState({
         name: "",
@@ -133,11 +136,12 @@ const Profile = (props) => {
     }, []);
 
     const getData = () => {
-        axios.get(apiList.user, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        })
+        axios
+            .get(apiList.user, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
             .then((response) => {
                 console.log(response.data);
                 setProfileDetails(response.data);
@@ -159,6 +163,54 @@ const Profile = (props) => {
                     message: "Error",
                 });
             });
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const editDetails = () => {
+        setOpen(true);
+    };
+
+    const handleUpdate = () => {
+        console.log(education);
+
+        let updatedDetails = {
+            ...profileDetails,
+            education: education
+                .filter((obj) => obj.institutionName.trim() !== "")
+                .map((obj) => {
+                    if (obj["endYear"] === "") {
+                        delete obj["endYear"];
+                    }
+                    return obj;
+                }),
+        };
+
+        axios
+            .put(apiList.user, updatedDetails, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+            .then((response) => {
+                setPopup({
+                    open: true,
+                    severity: "success",
+                    message: response.data.message,
+                });
+                getData();
+            })
+            .catch((err) => {
+                setPopup({
+                    open: true,
+                    severity: "error",
+                    message: err.response.data.message,
+                });
+                console.log(err.response);
+            });
+        setOpen(false);
     };
 
     return (
@@ -248,6 +300,7 @@ const Profile = (props) => {
                             variant="contained"
                             color="primary"
                             style={{ padding: "10px 50px", marginTop: "30px" }}
+                            onClick={() => handleUpdate()}
                         >
                             Update Details
                         </Button>
