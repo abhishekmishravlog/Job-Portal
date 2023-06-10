@@ -209,5 +209,56 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
     });
 });
 
+// recruiter/applicant gets all his applications [pagination]
+router.get("/applications", jwtAuth, (req, res) => {
+  const user = req.user;
+
+  Application.aggregate([
+    {
+      $lookup: {
+        from: "jobapplicantinfos",
+        localField: "userId",
+        foreignField: "userId",
+        as: "jobApplicant",
+      },
+    },
+    { $unwind: "$jobApplicant" },
+    {
+      $lookup: {
+        from: "jobs",
+        localField: "jobId",
+        foreignField: "_id",
+        as: "job",
+      },
+    },
+    { $unwind: "$job" },
+    {
+      $lookup: {
+        from: "recruiterinfos",
+        localField: "recruiterId",
+        foreignField: "userId",
+        as: "recruiter",
+      },
+    },
+    { $unwind: "$recruiter" },
+    {
+      $match: {
+        [user.type === "recruiter" ? "recruiterId" : "userId"]: user._id,
+      },
+    },
+    {
+      $sort: {
+        dateOfApplication: -1,
+      },
+    },
+  ])
+    .then((applications) => {
+      res.json(applications);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
 module.exports = router;
 
