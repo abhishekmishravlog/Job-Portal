@@ -62,6 +62,33 @@ const ApplicationTile = (props) => {
         finished: "#4EA5D9",
     };
 
+    const updateStatus = (status) => {
+        const address = `${apiList.applications}/${application._id}`;
+        const statusData = {
+            status: status,
+            dateOfJoining: new Date().toISOString(),
+        };
+        axios.put(address, statusData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        }).then((response) => {
+            setPopup({
+                open: true,
+                severity: "success",
+                message: response.data.message,
+            });
+            getData();
+        }).catch((err) => {
+            setPopup({
+                open: true,
+                severity: "error",
+                message: err.response.data.message,
+            });
+            console.log(err.response);
+        });
+    };
+
     const buttonSet = {
         applied: (
             <>
@@ -72,6 +99,7 @@ const ApplicationTile = (props) => {
                             background: colorSet["shortlisted"],
                             color: "#ffffff",
                         }}
+                        onClick={() => updateStatus("shortlisted")}
                     >
                         Shortlist
                     </Button>
@@ -83,6 +111,7 @@ const ApplicationTile = (props) => {
                             background: colorSet["rejected"],
                             color: "#ffffff",
                         }}
+                        onClick={() => updateStatus("rejected")}
                     >
                         Reject
                     </Button>
@@ -98,6 +127,7 @@ const ApplicationTile = (props) => {
                             background: colorSet["accepted"],
                             color: "#ffffff",
                         }}
+                        onClick={() => updateStatus("accepted")}
                     >
                         Accept
                     </Button>
@@ -109,6 +139,7 @@ const ApplicationTile = (props) => {
                             background: colorSet["rejected"],
                             color: "#ffffff",
                         }}
+                        onClick={() => updateStatus("rejected")}
                     >
                         Reject
                     </Button>
