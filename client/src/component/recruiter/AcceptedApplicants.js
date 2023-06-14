@@ -48,7 +48,6 @@ const ApplicationTile = (props) => {
     const classes = useStyles();
     const { application, getData } = props;
     const setPopup = useContext(SetPopupContext);
-    const [open, setOpen] = useState(false);
 
     const appliedOn = new Date(application.dateOfApplication);
 
@@ -108,7 +107,6 @@ const ApplicationTile = (props) => {
                         </Button>
                     </Grid>
                     <Grid item container xs>
-                        {/* {buttonSet[application.status]} */}
                         <Button
                             variant="contained"
                             color="primary"
@@ -135,7 +133,15 @@ const AcceptedApplicants = (props) => {
     }, []);
 
     const getData = () => {
+        let searchParams = [];
+        searchParams = [...searchParams, `status=accepted`];
+        searchParams = [...searchParams];
+        const queryString = searchParams.join("&");
+        console.log(queryString);
         let address = `${apiList.applicants}`;
+        if (queryString !== "") {
+            address = `${address}?${queryString}`;
+        }
 
         console.log(address);
 
