@@ -53,6 +53,10 @@ const JobTile = (props) => {
 
     console.log(jobDetails);
 
+    const handleClick = (location) => {
+        history.push(location);
+    };
+
     const postedOn = new Date(job.dateOfPosting);
 
     return (
@@ -86,6 +90,7 @@ const JobTile = (props) => {
                             variant="contained"
                             color="primary"
                             className={classes.statusBlock}
+                            onClick={() => handleClick(`/job/applications/${job._id}`)}
                         >
                             View Applications
                         </Button>

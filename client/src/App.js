@@ -13,6 +13,8 @@ import Home from './component/Home'
 import Applications from './component/Applications';
 import MessagePopup from './lib/MessagePopup'
 import Profile from './component/Profile';
+import JobApplications from './component/recruiter/JobApplications';
+import AcceptedApplicants from './component/recruiter/AcceptedApplicants'
 import RecruiterProfile from './component/recruiter/Profile'
 import isAuth, { userType } from './lib/isAuth';
 
@@ -77,6 +79,12 @@ function App() {
               </Route>
               <Route exact path="/myjobs">
                 <MyJobs />
+              </Route>
+              <Route exact path="/job/applications/:jobId">
+                <JobApplications />
+              </Route>
+              <Route exact path="/employees">
+                <AcceptedApplicants />
               </Route>
               <Route>
                 <ErrorPage />
