@@ -48,6 +48,7 @@ router.post("/jobs", jwtAuth, (req, res) => {
     });
 });
 
+
 // to update info of a particular job
 router.put("/jobs/:id", jwtAuth, (req, res) => {
   const user = req.user;
@@ -91,6 +92,34 @@ router.put("/jobs/:id", jwtAuth, (req, res) => {
       res.status(400).json(err);
     });
 });
+
+// to delete a job
+router.delete("/jobs/:id", jwtAuth, (req, res) => {
+  const user = req.user;
+  if (user.type != "recruiter") {
+    res.status(401).json({
+      message: "You don't have permissions to delete the job",
+    });
+    return;
+  }
+  Job.findOneAndDelete({
+    _id: req.params.id,
+    userId: user.id,
+  }).then((job) => {
+    if (job === null) {
+      res.status(401).json({
+        message: "You don't have permissions to delete the job",
+      });
+      return;
+    }
+    res.json({
+      message: "Job deleted successfully",
+    });
+  }).catch((err) => {
+    res.status(400).json(err);
+  });
+});
+
 
 
 // to get all the jobs [pagination] [for recruiter personal and for everyone]

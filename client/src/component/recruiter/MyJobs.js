@@ -50,6 +50,7 @@ const JobTile = (props) => {
     let history = useHistory();
     const { job, getData } = props;
     const setPopup = useContext(SetPopupContext);
+    const [open, setOpen] = useState(false);
     const [jobDetails, setJobDetails] = useState(job);
     const [openUpdate, setOpenUpdate] = useState(false);
 
@@ -66,8 +67,38 @@ const JobTile = (props) => {
         history.push(location);
     };
 
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+
     const handleCloseUpdate = () => {
         setOpenUpdate(false);
+    };
+
+    const handleDelete = () => {
+        console.log(job._id);
+        axios.delete(`${apiList.jobs}/${job._id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        }).then((response) => {
+            setPopup({
+                open: true,
+                severity: "success",
+                message: response.data.message,
+            });
+            getData();
+            handleClose();
+        }).catch((err) => {
+            console.log(err.response);
+            setPopup({
+                open: true,
+                severity: "error",
+                message: err.response.data.message,
+            });
+            handleClose();
+        });
     };
 
 
@@ -153,12 +184,52 @@ const JobTile = (props) => {
                             variant="contained"
                             color="secondary"
                             className={classes.statusBlock}
+                            onClick={() => { setOpen(true); }}
                         >
                             Delete Job
                         </Button>
                     </Grid>
                 </Grid>
             </Grid>
+            <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
+                <Paper
+                    style={{
+                        padding: "20px",
+                        outline: "none",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        minWidth: "30%",
+                        alignItems: "center",
+                    }}
+                >
+                    <Typography variant="h4" style={{ marginBottom: "10px" }}>
+                        Are you sure?
+                    </Typography>
+                    <Grid container justify="center" spacing={5}>
+                        <Grid item>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                style={{ padding: "10px 50px" }}
+                                onClick={() => handleDelete()}
+                            >
+                                Delete
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                style={{ padding: "10px 50px" }}
+                                onClick={() => handleClose()}
+                            >
+                                Cancel
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </Modal>
             <Modal
                 open={openUpdate}
                 onClose={handleCloseUpdate}
