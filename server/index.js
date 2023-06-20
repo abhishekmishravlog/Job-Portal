@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const passportConfig = require("./lib/passportConfig");
 const cors = require("cors");
 const dotenv = require("dotenv")
+const fs = require("fs");
 
 // MongoDB
 mongoose.set('strictQuery', true);
@@ -15,6 +16,17 @@ mongoose.connect(process.env.MONGO_URL, {
 }).catch((err) => {
   console.log(err);
 });
+
+// initialising directories
+if (!fs.existsSync("./public")) {
+  fs.mkdirSync("./public");
+}
+if (!fs.existsSync("./public/resume")) {
+  fs.mkdirSync("./public/resume");
+}
+if (!fs.existsSync("./public/profile")) {
+  fs.mkdirSync("./public/profile");
+}
 
 const app = express();
 
@@ -29,6 +41,7 @@ app.use(passportConfig.initialize());
 // Routing
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/api", require("./routes/apiRoutes"));
+app.use("/upload", require("./routes/uploadRoutes"));
 
 app.listen(4444, () => {
   console.log('Server is running on port 4444');
