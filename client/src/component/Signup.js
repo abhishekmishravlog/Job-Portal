@@ -219,8 +219,7 @@ const Login = (props) => {
         });
 
         if (verified) {
-            axios
-                .post(apiList.signup, updatedDetails)
+            axios.post(apiList.signup, updatedDetails)
                 .then((response) => {
                     localStorage.setItem("token", response.data.token);
                     localStorage.setItem("type", response.data.type);
@@ -412,13 +411,6 @@ const Login = (props) => {
                                 className={classes.inputBox}
                                 label="Resume (.pdf)"
                                 icon={<DescriptionIcon />}
-                                // value={files.resume}
-                                // onChange={(event) =>
-                                //   setFiles({
-                                //     ...files,
-                                //     resume: event.target.files[0],
-                                //   })
-                                // }
                                 uploadTo={apiList.uploadResume}
                                 handleInput={handleInput}
                                 identifier={"resume"}
@@ -429,13 +421,6 @@ const Login = (props) => {
                                 className={classes.inputBox}
                                 label="Profile Photo (.jpg/.png)"
                                 icon={<FaceIcon />}
-                                // value={files.profileImage}
-                                // onChange={(event) =>
-                                //   setFiles({
-                                //     ...files,
-                                //     profileImage: event.target.files[0],
-                                //   })
-                                // }
                                 uploadTo={apiList.uploadProfileImage}
                                 handleInput={handleInput}
                                 identifier={"profile"}
