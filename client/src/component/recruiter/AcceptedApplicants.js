@@ -6,6 +6,7 @@ import {
     makeStyles,
     Paper,
     Typography,
+    Modal,
     Avatar,
 } from "@material-ui/core";
 import axios from "axios";
@@ -48,8 +49,13 @@ const ApplicationTile = (props) => {
     const classes = useStyles();
     const { application, getData } = props;
     const setPopup = useContext(SetPopupContext);
+    const [openEndJob, setOpenEndJob] = useState(false);
 
     const appliedOn = new Date(application.dateOfApplication);
+
+    const handleCloseEndJob = () => {
+        setOpenEndJob(false);
+    };
 
     const colorSet = {
         applied: "#3454D1",
@@ -90,6 +96,35 @@ const ApplicationTile = (props) => {
                 message: "No resume found",
             });
         }
+    };
+
+    const updateStatus = (status) => {
+        const address = `${apiList.applications}/${application._id}`;
+        const statusData = {
+            status: status,
+            dateOfJoining: new Date().toISOString(),
+        };
+        axios.put(address, statusData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        }).then((response) => {
+            setPopup({
+                open: true,
+                severity: "success",
+                message: response.data.message,
+            });
+            handleCloseEndJob();
+            getData();
+        }).catch((err) => {
+            setPopup({
+                open: true,
+                severity: "error",
+                message: err.response.data.message,
+            });
+            console.log(err.response);
+            handleCloseEndJob();
+        });
     };
 
     return (
@@ -146,12 +181,58 @@ const ApplicationTile = (props) => {
                             style={{
                                 background: "#09BC8A",
                             }}
+                            onClick={() => { setOpenEndJob(true); }}
                         >
                             End Job
                         </Button>
                     </Grid>
                 </Grid>
             </Grid>
+            <Modal
+                open={openEndJob}
+                onClose={handleCloseEndJob}
+                className={classes.popupDialog}
+            >
+                <Paper
+                    style={{
+                        padding: "20px",
+                        outline: "none",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        minWidth: "30%",
+                        alignItems: "center",
+                    }}
+                >
+                    <Typography variant="h4" style={{ marginBottom: "10px" }}>
+                        Are you sure?
+                    </Typography>
+                    <Grid container justify="center" spacing={5}>
+                        <Grid item>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                style={{ padding: "10px 50px" }}
+                                onClick={() => {
+                                    updateStatus("finished");
+                                }}
+                            >
+                                Yes
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                style={{ padding: "10px 50px" }}
+                                onClick={() => handleCloseEndJob()}
+                            >
+                                Cancel
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </Modal>
         </Paper>
     );
 };
