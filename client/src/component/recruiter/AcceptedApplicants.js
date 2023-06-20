@@ -61,6 +61,37 @@ const ApplicationTile = (props) => {
         finished: "#4EA5D9",
     };
 
+    const getResume = () => {
+        if (
+            application.jobApplicant.resume &&
+            application.jobApplicant.resume !== ""
+        ) {
+            const address = `${server}${application.jobApplicant.resume}`;
+            console.log(address);
+            axios(address, {
+                method: "GET",
+                responseType: "blob",
+            }).then((response) => {
+                const file = new Blob([response.data], { type: "application/pdf" });
+                const fileURL = URL.createObjectURL(file);
+                window.open(fileURL);
+            }).catch((error) => {
+                console.log(error);
+                setPopup({
+                    open: true,
+                    severity: "error",
+                    message: "Error",
+                });
+            });
+        } else {
+            setPopup({
+                open: true,
+                severity: "error",
+                message: "No resume found",
+            });
+        }
+    };
+
     return (
         <Paper className={classes.jobTileOuter} elevation={3}>
             <Grid container>
@@ -102,6 +133,7 @@ const ApplicationTile = (props) => {
                             variant="contained"
                             className={classes.statusBlock}
                             color="primary"
+                            onClick={() => getResume()}
                         >
                             Download Resume
                         </Button>

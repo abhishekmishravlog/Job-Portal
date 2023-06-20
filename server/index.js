@@ -42,6 +42,7 @@ app.use(passportConfig.initialize());
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/api", require("./routes/apiRoutes"));
 app.use("/upload", require("./routes/uploadRoutes"));
+app.use("/host", require("./routes/downloadRoutes"));
 
 app.listen(4444, () => {
   console.log('Server is running on port 4444');
